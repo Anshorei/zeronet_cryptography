@@ -1,5 +1,5 @@
 # ZeruCrypt
-A cryptograph interface for ZeroNet/zerunet.
+A rust cryptography interface for ZeroNet/zerunet.
 
 ## verify
 
