@@ -1,6 +1,14 @@
 # ZeruCrypt
 A rust cryptography interface for ZeroNet/zerunet.
 
+This library is a part of the zerunet project. It has been split
+from the main project because it could be useful to build programs
+that have to sign data that ZN clients will consider valid.
+
+## Benchmarks
+Zerucrypt has not been benchmarked yet.
+If you'd like to help: contact Ansho Rei (anshorei@zeroid.bit) on ZeroMe or ZeroMail!
+
 ## verify
 
 ```
