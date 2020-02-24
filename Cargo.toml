@@ -7,10 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bitcoin = "*"
-ripemd160 = "*"
-secp256k1 = { version = "*", features = ["recovery", "rand"] }
-base64 = "*"
-rand = { version = "*", features = ["rand_os"] }
-sha2 = "*"
-basex-rs = "*"
+bitcoin = "0.23"
+ripemd160 = "0.8"
+secp256k1 = { version = "0.17", features = ["recovery", "rand"] }
+base64 = "0.11"
+rand = "0.7.3"
+sha2 = "0.8"
+basex-rs = "0.1"
