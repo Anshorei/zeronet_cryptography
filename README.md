@@ -37,3 +37,11 @@ match sign(data, private_key) {
 	Err(_) => println!("An error occured during the signing process"),
 }
 ```
+
+## create
+
+```
+use zerucrypt::create;
+
+let (priv_key, pub_key) = create();
+```

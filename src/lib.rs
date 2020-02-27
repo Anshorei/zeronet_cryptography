@@ -8,7 +8,7 @@ use sha2::{Digest, Sha256};
 mod error;
 use error::Error;
 
-pub fn sha256d(input: &[u8]) -> Vec<u8> {
+fn sha256d(input: &[u8]) -> Vec<u8> {
 	let mut hasher1 = Sha256::default();
 	hasher1.input(input);
 	let mut hasher2 = Sha256::default();
@@ -16,12 +16,23 @@ pub fn sha256d(input: &[u8]) -> Vec<u8> {
 	return hasher2.result().into_iter().collect();
 }
 
-pub fn hash160(input: &[u8]) -> Vec<u8> {
+fn hash160(input: &[u8]) -> Vec<u8> {
 	let mut hasher1 = Sha256::default();
 	hasher1.input(input);
 	let mut hasher2 = Ripemd160::default();
 	hasher2.input(hasher1.result());
 	return hasher2.result().into_iter().collect();
+}
+
+fn serialize_address(public_key: secp256k1::PublicKey) -> String {
+	let serialized = public_key.serialize_uncompressed();
+
+	let hashed = hash160(&serialized);
+	let version = [0u8];
+	let hashed2 = sha256d(&[&version, hashed.as_slice()].concat());
+	let out = &[&version, hashed.as_slice(), hashed2.get(0..4).unwrap()].concat();
+
+	BaseX::new(BITCOIN).encode(out)
 }
 
 static MSG_SIGN_PREFIX: &'static [u8] = b"\x18Bitcoin Signed Message:\n";
@@ -35,11 +46,11 @@ pub fn msg_hash(msg: &str) -> Vec<u8> {
 /// Verifies that sign is a valid sign for given data and address
 /// ```
 /// use zerucrypt::verify;
-/// 
+///
 /// let data = "Testmessage";
 /// let address = "1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN";
 /// let signature = "G+Hnv6dXxOAmtCj8MwQrOh5m5bV9QrmQi7DSGKiRGm9TWqWP3c5uYxUI/C/c+m9+LtYO26GbVnvuwu7hVPpUdow=";
-/// 
+///
 /// match verify(data, address, signature) {
 /// 	Ok(_) => println!("Signature is a valid."),
 /// 	Err(_) => println!("Signature is invalid."),
@@ -63,14 +74,7 @@ pub fn verify(data: &str, valid_address: &str, sign: &str) -> Result<(), Error> 
 	let message = secp256k1::Message::from_slice(hash.as_slice())?;
 	let secp = Secp256k1::new();
 	let recovered: secp256k1::PublicKey = secp.recover(&message, &signature)?;
-	let serialized = recovered.serialize_uncompressed();
-
-	let hashed = hash160(&serialized);
-	let version = [0u8];
-	let hashed2 = sha256d(&[&version, hashed.as_slice()].concat());
-	let out = &[&version, hashed.as_slice(), hashed2.get(0..4).unwrap()].concat();
-
-	let address = BaseX::new(BITCOIN).encode(out);
+	let address = serialize_address(recovered);
 
 	if address == valid_address {
 		return Ok(());
@@ -81,10 +85,10 @@ pub fn verify(data: &str, valid_address: &str, sign: &str) -> Result<(), Error> 
 /// Generate a valid signature for given data and private key
 /// ```
 /// use zerucrypt::sign;
-/// 
+///
 /// let data = "Testmessage";
 /// let private_key = "5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss";
-/// 
+///
 /// match sign(data, private_key) {
 /// 	Ok(signature) => println!("The signature is {}", signature),
 /// 	Err(_) => println!("An error occured during the signing process"),
@@ -105,6 +109,28 @@ pub fn sign(data: &str, privkey: &str) -> Result<String, Error> {
 
 	let s = encode(&ser_c_v.concat());
 	return Ok(s);
+}
+
+/// Create a valid key pair
+/// ```
+/// use zerucrypt::create;
+///
+/// let (priv_key, pub_key) = create();
+/// ```
+pub fn create() -> (String, String) {
+	let secp = secp256k1::Secp256k1::new();
+	let mut rng = rand::thread_rng();
+	let (priv_key, address) = secp.generate_keypair(&mut rng);
+
+	let address = serialize_address(address);
+
+	let slice: &[u8] = &priv_key[..];
+	let mut bytes = vec![128];
+	bytes.extend_from_slice(slice);
+	bytes.extend_from_slice(&[92, 91, 187, 38]);
+	let priv_key = BaseX::new(BITCOIN).encode(&bytes);
+
+	(priv_key, address)
 }
 
 #[cfg(test)]
@@ -138,5 +164,13 @@ mod tests {
 		assert_eq!(result.is_ok(), true);
 		let result2 = super::verify(MESSAGE, PUBKEY, &result.unwrap());
 		assert_eq!(result2.is_ok(), true);
+	}
+
+	#[test]
+	fn test_creating() {
+		let (priv_key, address) = super::create();
+		let signature = super::sign(MESSAGE, &priv_key).unwrap();
+		let result = super::verify(MESSAGE, &address, &signature);
+		assert_eq!(result.is_ok(), true);
 	}
 }
