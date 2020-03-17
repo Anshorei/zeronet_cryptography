@@ -1,3 +1,7 @@
+![Build](http://localhost:43110/1M4Wwi5x5RUN1QJoS6CcnQh515FMtRNg1d/img/build.svg)
+![Tests](http://localhost:43110/1M4Wwi5x5RUN1QJoS6CcnQh515FMtRNg1d/img/tests.svg)
+![Coverage](http://localhost:43110/1M4Wwi5x5RUN1QJoS6CcnQh515FMtRNg1d/img/coverage.svg)
+
 # ZeruCrypt
 A rust cryptography interface for ZeroNet/zerunet.
 
