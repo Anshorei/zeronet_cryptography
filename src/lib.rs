@@ -134,8 +134,10 @@ pub fn create() -> (String, String) {
 }
 
 #[cfg(test)]
-#[cfg_attr(tarpaulin, skip)]
+#[cfg_attr(tarpaulin, ignore)]
 mod tests {
+	use super::*;
+
 	const PUBKEY: &str = "1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN";
 	const PRIVKEY: &str = "5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss";
 	const MESSAGE: &str = "Testmessage";
@@ -148,14 +150,17 @@ mod tests {
 
 	#[test]
 	fn test_msg_hash() {
-		let result = super::msg_hash(MESSAGE);
+		let result = msg_hash(MESSAGE);
 		assert_eq!(result, MSG_HASH);
 	}
 
 	#[test]
 	fn test_verification() {
-		let result = super::verify(MESSAGE, PUBKEY, SIGNATURE);
-		assert_eq!(result.is_ok(), true)
+		let result = verify(MESSAGE, PUBKEY, SIGNATURE);
+		assert_eq!(result.is_ok(), true);
+
+		let result = verify(MESSAGE, PUBKEY, "i");
+		assert_eq!(result.unwrap_err(), Error::DecodeSignatureFailure);
 	}
 
 	#[test]

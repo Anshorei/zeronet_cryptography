@@ -1,7 +1,7 @@
 use base64::DecodeError;
 use secp256k1::Error as SecpError;
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum Error {
 	DecodeSignatureFailure,
 	RecoveryIdFailure,
