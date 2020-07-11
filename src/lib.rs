@@ -6,7 +6,7 @@ use secp256k1::Secp256k1;
 use sha2::{Digest, Sha256};
 
 mod error;
-use error::Error;
+use error::CryptError as Error;
 
 fn sha256d(input: &[u8]) -> Vec<u8> {
   let mut hasher1 = Sha256::default();
