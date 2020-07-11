@@ -37,10 +37,10 @@ fn serialize_address(public_key: secp256k1::PublicKey) -> String {
 
 static MSG_SIGN_PREFIX: &'static [u8] = b"\x18Bitcoin Signed Message:\n";
 
-pub fn msg_hash(msg: &str) -> Vec<u8> {
+pub fn msg_hash(msg: &[u8]) -> Vec<u8> {
   let bytes;
   bytes = serialize(&VarInt(msg.len() as u64));
-  sha256d(&[MSG_SIGN_PREFIX, bytes.as_slice(), msg.as_bytes()].concat())
+  sha256d(&[MSG_SIGN_PREFIX, bytes.as_slice(), msg].concat())
 }
 
 /// Verifies that sign is a valid sign for given data and address
@@ -52,13 +52,13 @@ pub fn msg_hash(msg: &str) -> Vec<u8> {
 /// let signature = "G+Hnv6dXxOAmtCj8MwQrOh5m5bV9QrmQi7DSGKiRGm9TWqWP3c5uYxUI/C/c+m9+LtYO26GbVnvuwu7hVPpUdow=";
 ///
 /// match verify(data, address, signature) {
-/// 	Ok(_) => println!("Signature is a valid."),
+/// 	Ok(_) => println!("Signature is valid."),
 /// 	Err(_) => println!("Signature is invalid."),
 /// }
 /// ```
-pub fn verify(data: &str, valid_address: &str, sign: &str) -> Result<(), Error> {
+pub fn verify<T: Into<Vec<u8>>>(data: T, valid_address: &str, sign: &str) -> Result<(), Error> {
   let sig = decode(sign)?;
-  let hash = msg_hash(data);
+  let hash = msg_hash(&data.into());
 
   let (sig_first, sig_r) = match sig.split_first() {
     Some(t) => t,
@@ -94,13 +94,13 @@ pub fn verify(data: &str, valid_address: &str, sign: &str) -> Result<(), Error> 
 /// 	Err(_) => println!("An error occured during the signing process"),
 /// }
 /// ```
-pub fn sign(data: &str, privkey: &str) -> Result<String, Error> {
+pub fn sign<T: Into<Vec<u8>>>(data: T, privkey: &str) -> Result<String, Error> {
   let hex = match BaseX::new(BITCOIN).decode(String::from(privkey)) {
     Some(h) => h,
     None => return Err(Error::PrivateKeyFailure),
   };
   let privkey = secp256k1::SecretKey::from_slice(&hex[1..33])?;
-  let hash = msg_hash(data);
+  let hash = msg_hash(&data.into());
   let message = secp256k1::Message::from_slice(hash.as_slice())?;
   let secp = Secp256k1::new();
   let sig = secp.sign_recoverable(&message, &privkey);
@@ -150,7 +150,7 @@ mod tests {
 
   #[test]
   fn test_msg_hash() {
-    let result = msg_hash(MESSAGE);
+    let result = msg_hash(MESSAGE.as_bytes());
     assert_eq!(result, MSG_HASH);
   }
 
@@ -159,7 +159,7 @@ mod tests {
     let result = verify(MESSAGE, PUBKEY, SIGNATURE);
     assert_eq!(result.is_ok(), true);
 
-    let result = verify(MESSAGE, PUBKEY, "i");
+    let result = verify(MESSAGE.as_bytes(), PUBKEY, "i");
     assert_eq!(result.unwrap_err(), Error::DecodeSignatureFailure);
   }
 
