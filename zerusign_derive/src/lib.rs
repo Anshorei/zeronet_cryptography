@@ -67,8 +67,8 @@ impl Attr {
 /// Derive Sign.
 /// ```
 /// use serde_derive::{Serialize, Deserialize};
-/// use sign::Sign;
-/// use sign_derive::*;
+/// use zerusign::Sign;
+/// use zerusign_derive::*;
 /// use zerucrypt;
 ///
 /// pub fn is_default<T: Default + PartialEq>(t: &T) -> bool {
@@ -92,8 +92,8 @@ impl Attr {
 /// 		skipped_field: true,
 /// 	};
 /// 	let key = "5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss";
-/// 	my_struct.sign(key);
-/// 	assert!(false);
+/// 	let result = my_struct.sign(key);
+///   assert!(result.is_ok());
 /// }
 /// ```
 #[proc_macro_derive(Sign, attributes(sign))]
@@ -164,7 +164,9 @@ pub fn my_macro(input: TokenStream) -> TokenStream {
 		quote!(
 			#field_name
 		)
-	}).unwrap();
+	}).expect("At least one field needs to be marked as signature");
+	// TODO: Also warn if more than one field is marked as signature
+	// that only the first one will be used as signature field.
 
 	let expanded = quote!{
 		// Stripped down version of struct with only filtered fields
@@ -191,6 +193,7 @@ pub fn my_macro(input: TokenStream) -> TokenStream {
 				};
 
 				let (serialized, mut restored) = (
+					// TODO: Remove unwrap here
 					serde_json::to_string(&stripped).unwrap(),
 					#name {
 						#( #set_filtered_fields )*
