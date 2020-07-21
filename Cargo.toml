@@ -1,6 +1,6 @@
 [package]
 name = "zerucrypt"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Ansho Rei <anshorei@zeroid.bit>"]
 edition = "2018"
 description = "ZeroNet cryptocraphy helper library"
@@ -14,10 +14,10 @@ license = "WTFPL"
 
 [dependencies]
 bitcoin = "0.23"
-ripemd160 = "0.8"
+ripemd160 = "0.9"
 secp256k1 = { version = "0.17", features = ["recovery", "rand", "std"] }
 base64 = "0.12"
 rand = { version = "0.6", features = ["std"] }
-sha2 = "0.8"
+sha2 = "0.9"
 basex-rs = "0.1"
 thiserror = "1.0"

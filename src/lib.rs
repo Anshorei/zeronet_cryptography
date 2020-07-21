@@ -10,18 +10,18 @@ pub use error::CryptError as Error;
 
 fn sha256d(input: &[u8]) -> Vec<u8> {
   let mut hasher1 = Sha256::default();
-  hasher1.input(input);
+  hasher1.update(input);
   let mut hasher2 = Sha256::default();
-  hasher2.input(hasher1.result());
-  return hasher2.result().into_iter().collect();
+  hasher2.update(hasher1.finalize());
+  return hasher2.finalize().into_iter().collect();
 }
 
 fn hash160(input: &[u8]) -> Vec<u8> {
   let mut hasher1 = Sha256::default();
-  hasher1.input(input);
+  hasher1.update(input);
   let mut hasher2 = Ripemd160::default();
-  hasher2.input(hasher1.result());
-  return hasher2.result().into_iter().collect();
+  hasher2.update(hasher1.finalize());
+  return hasher2.finalize().into_iter().collect();
 }
 
 fn serialize_address(public_key: secp256k1::PublicKey) -> String {
