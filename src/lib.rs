@@ -119,7 +119,7 @@ pub fn sign<T: Into<Vec<u8>>>(data: T, privkey: &str) -> Result<String, Error> {
 /// ```
 pub fn create() -> (String, String) {
   let secp = secp256k1::Secp256k1::new();
-  let mut rng = rand::thread_rng();
+  let mut rng = secp256k1::rand::thread_rng();
   let (priv_key, address) = secp.generate_keypair(&mut rng);
 
   let address = serialize_address(address);
