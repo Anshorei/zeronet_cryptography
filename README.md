@@ -10,6 +10,12 @@ This library is a part of the zerunet project. It has been split
 from the main project because it could be useful to build programs
 that have to sign data that ZN clients will consider valid.
 
+## Note
+Due to bitcoin-rs not having been updated for secp256k1 v0.17.2,
+the dependency has been replaced with an updated crate in the cratez
+repository. When the dependencies on the bitcoin crate are resolved
+this change can be undone.
+
 ## Benchmarks
 Zerucrypt has not been benchmarked yet.
 If you'd like to help: contact Ansho Rei (anshorei@zeroid.bit) on ZeroMe or ZeroMail!

@@ -1,6 +1,6 @@
 [package]
 name = "zerucrypt"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Ansho Rei <anshorei@zeroid.bit>"]
 edition = "2018"
 description = "ZeroNet cryptocraphy helper library"
@@ -13,7 +13,7 @@ license = "WTFPL"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bitcoin = "0.23"
+bitcoin = { version = "0.23", registry = "cratez" }
 ripemd160 = "0.9"
 secp256k1 = { version = "0.17", features = ["recovery", "rand", "std", "rand-std"] }
 base64 = "0.12"
