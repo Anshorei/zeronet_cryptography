@@ -1,11 +1,11 @@
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 use syn::{parse_macro_input, parse_quote, DeriveInput, GenericParam, Generics, Data, Field, Attribute, Path, Ident, Meta, NestedMeta};
 use syn::group::Group;
 use std::fmt::{self, Display};
-mod zeruformatter;
-use quote::ToTokens;
 use serde::Serialize;
+
+mod zeruformatter;
 
 #[derive(Copy, Clone)]
 struct Symbol(&'static str);
@@ -104,7 +104,7 @@ pub fn my_macro(input: TokenStream) -> TokenStream {
 	let name = input.ident;
 	let fields = match input.data {
 		Data::Struct(data) => data.fields,
-		_ => panic!("Sign can only be derived on structs."),
+		_ => panic!("Sign can only be derived on structs"),
 	};
 
 	let generics = add_trait_bounds(input.generics);
