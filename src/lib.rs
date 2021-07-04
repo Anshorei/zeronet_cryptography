@@ -45,7 +45,7 @@ pub fn msg_hash(msg: &[u8]) -> Vec<u8> {
 
 /// Verifies that sign is a valid sign for given data and address
 /// ```
-/// use zerucrypt::verify;
+/// use zeronet_cryptography::verify;
 ///
 /// let data = "Testmessage";
 /// let address = "1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN";
@@ -84,7 +84,7 @@ pub fn verify<T: Into<Vec<u8>>>(data: T, valid_address: &str, sign: &str) -> Res
 
 /// Generate a valid signature for given data and private key
 /// ```
-/// use zerucrypt::sign;
+/// use zeronet_cryptography::sign;
 ///
 /// let data = "Testmessage";
 /// let private_key = "5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss";
@@ -113,7 +113,7 @@ pub fn sign<T: Into<Vec<u8>>>(data: T, privkey: &str) -> Result<String, Error> {
 
 /// Create a valid key pair
 /// ```
-/// use zerucrypt::create;
+/// use zeronet_cryptography::create;
 ///
 /// let (priv_key, pub_key) = create();
 /// ```
