@@ -1,22 +1,28 @@
 [package]
-name = "zeronet_cryptography"
+name = "zeronet_sign_derive"
 version = "0.1.9"
 authors = ["Ansho Rei <anshorei@protonmail.com>"]
 edition = "2018"
-description = "ZeroNet cryptography helper library"
+description = "ZeroNet content signing"
 documentation = "http://www.github.com/Anshorei/zeronet_cryptography"
-readme = "README.md"
+readme = "../zeronet_sign/README.md"
 homepage = "http://www.github.com/Anshorei/zeronet_cryptography"
 repository = "http://www.github.com/Anshorei/zeronet_cryptography"
 license = "WTFPL"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "zeronet_sign_derive"
+proc-macro = true
+
 [dependencies]
-bitcoin = "~0.27"
-ripemd = "~0.1"
-secp256k1 = { version = "~0.20", features = ["recovery", "rand", "std", "rand-std"] }
-base64 = "~0.13"
-sha2 = "~0.10"
-basex-rs = "~0.1.0"
-thiserror = "~1.0"
+zeronet_cryptography = "0.1.9"
+zeronet_sign = "0.1.9"
+quote = "1.0"
+syn = { version = "1.0", features = [ "parsing", "derive", "extra-traits" ] }
+
+[dev-dependencies]
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"

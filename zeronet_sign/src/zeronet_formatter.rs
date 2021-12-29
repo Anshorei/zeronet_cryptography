@@ -4,14 +4,14 @@ use serde_json::ser::{Formatter, Serializer};
 use std::io;
 
 #[derive(Clone, Debug)]
-pub struct ZeruFormatter;
+pub struct ZeronetFormatter;
 
 pub fn to_writer_pretty<W, T: ?Sized>(writer: W, value: &T) -> Result<()>
 where
 	W: io::Write,
 	T: Serialize,
 {
-	let mut ser = Serializer::with_formatter(writer, ZeruFormatter);
+	let mut ser = Serializer::with_formatter(writer, ZeronetFormatter);
 	value.serialize(&mut ser)
 }
 
@@ -36,7 +36,7 @@ where
 	Ok(string)
 }
 
-impl Formatter for ZeruFormatter {
+impl Formatter for ZeronetFormatter {
 	#[inline]
 	fn begin_array<W: ?Sized>(&mut self, writer: &mut W) -> io::Result<()>
 	where

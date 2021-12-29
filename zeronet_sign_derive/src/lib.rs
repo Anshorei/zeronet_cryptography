@@ -1,11 +1,7 @@
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, parse_quote, DeriveInput, GenericParam, Generics, Data, Field, Attribute, Path, Ident, Meta, NestedMeta};
-use syn::group::Group;
+use syn::{parse_macro_input, parse_quote, DeriveInput, GenericParam, Generics, Data, Field, Path, Ident, Meta, NestedMeta};
 use std::fmt::{self, Display};
-use serde::Serialize;
-
-mod zeruformatter;
 
 #[derive(Copy, Clone)]
 struct Symbol(&'static str);
@@ -46,30 +42,18 @@ const SIGNATURE: Symbol = Symbol("signature");
 
 #[derive(PartialEq)]
 enum Attr {
-	None,
 	Skip,
 	Signature,
 	// TODO: give feedback to user when encountering unrecognized attributes
 	Unrecognized,
 }
 
-impl Attr {
-	fn should_be_signed(&self) -> bool {
-		match self {
-			Attr::None => true,
-			Attr::Skip => false,
-			Attr::Signature => false,
-			Attr::Unrecognized => true,
-		}
-	}
-}
-
 /// Derive Sign.
 /// ```
 /// use serde_derive::{Serialize, Deserialize};
-/// use zerusign::Sign;
-/// use zerusign_derive::*;
-/// use zerucrypt;
+/// use zeronet_sign::Sign;
+/// use zeronet_sign_derive::*;
+/// use zeronet_cryptography;
 ///
 /// pub fn is_default<T: Default + PartialEq>(t: &T) -> bool {
 /// 	t == &T::default()
@@ -178,10 +162,10 @@ pub fn my_macro(input: TokenStream) -> TokenStream {
 
 		impl #impl_generics Sign for #name #ty_generics #where_clause {
 
-			fn sign(self, key: &str) -> std::result::Result<Self, zerucrypt::Error> {
-				Ok(self.sign_with(move |data| zerucrypt::sign(data, key))?)
+			fn sign(self, key: &str) -> std::result::Result<Self, zeronet_cryptography::Error> {
+				Ok(self.sign_with(move |data| zeronet_cryptography::sign(data, key))?)
 			}
-			fn sign_with<F: FnOnce(Vec<u8>) -> std::result::Result<String, zerucrypt::Error> + Sized>(self, signer: F) -> std::result::Result<Self, zerucrypt::Error> {
+			fn sign_with<F: FnOnce(Vec<u8>) -> std::result::Result<String, zeronet_cryptography::Error> + Sized>(self, signer: F) -> std::result::Result<Self, zeronet_cryptography::Error> {
 				let #name {
 					#( #field_names )*
 				} = self;

@@ -1,5 +1,7 @@
-use zerucrypt::Error;
+use zeronet_cryptography::Error;
 use serde::Serialize;
+
+pub mod zeronet_formatter;
 
 pub trait Sign: Sized + Serialize {
 	/// Sign the struct with a private key using the default algorithm

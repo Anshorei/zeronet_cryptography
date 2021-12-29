@@ -1,7 +1,7 @@
 use base64::{decode, encode};
 use basex_rs::{BaseX, Decode, Encode, BITCOIN};
 use bitcoin::consensus::encode::{serialize, VarInt};
-use ripemd160::Ripemd160;
+use ripemd::Ripemd160;
 use secp256k1::Secp256k1;
 use sha2::{Digest, Sha256};
 
